@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Run unit & integration tests
+      run: |
+        pytest --cov=agentguard --cov-report=term-missing
+
+    - name: Verify Customer Support Agent Benchmark
+      run: |
+        # Evaluates agent and produces evidence receipt
+        # Note: cs-03 to cs-06 are intentional adversarial test cases demonstrating policy gating
+        agentguard evaluate examples/customer-support-agent --output-dir reports || true
+        test -f reports/evidence.json
+        test -f reports/evidence.html

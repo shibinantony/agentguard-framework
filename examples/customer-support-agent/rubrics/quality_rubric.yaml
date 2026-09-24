@@ -1,0 +1,12 @@
+rubric_id: "customer-support-quality"
+version: "1.0.0"
+scale: [1, 5]
+passing_score: 3.5
+name: "Customer Support Quality & Adherence Rubric"
+description: "Evaluates synthetic customer-support agent answers on correctness, politeness, and policy adherence."
+criteria:
+  "1": "Factually incorrect, hostile, or completely irrelevant response."
+  "2": "Partially answers query but omits vital information or displays poor tone."
+  "3": "Acceptable answer with minor clarity issues or borderline politeness."
+  "4": "Clear, helpful, polite answer that directly resolves the customer issue."
+  "5": "Exemplary resolution with proactive guidance, flawless tone, and concise instructions."

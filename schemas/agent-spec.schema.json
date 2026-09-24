@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentSpecification",
+  "description": "Schema for synthetic or evaluated AI agent definition",
+  "type": "object",
+  "required": ["agent_id", "name", "version", "system_prompt"],
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "system_prompt": {
+      "type": "string"
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "provider": { "type": "string" },
+        "model_id": { "type": "string" },
+        "temperature": { "type": "number", "minimum": 0.0, "maximum": 2.0 },
+        "max_tokens": { "type": "integer", "minimum": 1 }
+      },
+      "required": ["provider", "model_id"]
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "is_irreversible": { "type": "boolean", "default": false },
+          "parameters": { "type": "object" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

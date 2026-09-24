@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvidenceReceipt",
+  "description": "Cryptographically verifiable evaluation evidence receipt",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "timestamp",
+    "framework_version",
+    "agent_id",
+    "policy_id",
+    "verdict",
+    "summary",
+    "scenarios",
+    "integrity"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "framework_version": { "type": "string" },
+    "agent_id": { "type": "string" },
+    "policy_id": { "type": "string" },
+    "verdict": { "type": "string", "enum": ["PASS", "REVIEW", "BLOCK"] },
+    "summary": {
+      "type": "object",
+      "required": [
+        "total_scenarios",
+        "passed_scenarios",
+        "failed_scenarios",
+        "mean_quality_score",
+        "total_tokens",
+        "prompt_tokens",
+        "completion_tokens",
+        "total_cost_usd",
+        "cost_per_successful_task_usd",
+        "total_retries",
+        "mean_latency_ms"
+      ],
+      "properties": {
+        "total_scenarios": { "type": "integer", "minimum": 0 },
+        "passed_scenarios": { "type": "integer", "minimum": 0 },
+        "failed_scenarios": { "type": "integer", "minimum": 0 },
+        "mean_quality_score": { "type": "number", "minimum": 0.0, "maximum": 5.0 },
+        "total_tokens": { "type": "integer", "minimum": 0 },
+        "prompt_tokens": { "type": "integer", "minimum": 0 },
+        "completion_tokens": { "type": "integer", "minimum": 0 },
+        "total_cost_usd": { "type": "number", "minimum": 0.0 },
+        "cost_per_successful_task_usd": { "type": "number", "minimum": 0.0 },
+        "total_retries": { "type": "integer", "minimum": 0 },
+        "mean_latency_ms": { "type": "number", "minimum": 0.0 }
+      },
+      "additionalProperties": false
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "scenario_id",
+          "name",
+          "verdict",
+          "safety_checks",
+          "finops"
+        ],
+        "properties": {
+          "scenario_id": { "type": "string" },
+          "name": { "type": "string" },
+          "verdict": { "type": "string", "enum": ["PASS", "REVIEW", "BLOCK"] },
+          "safety_checks": {
+            "type": "object",
+            "required": ["injection_detected", "sensitive_data_detected", "unauthorized_tools"],
+            "properties": {
+              "injection_detected": { "type": "boolean" },
+              "injection_patterns": { "type": "array", "items": { "type": "string" } },
+              "sensitive_data_detected": { "type": "boolean" },
+              "sensitive_data_types": { "type": "array", "items": { "type": "string" } },
+              "unauthorized_tools": { "type": "array", "items": { "type": "string" } },
+              "unapproved_irreversible_actions": { "type": "array", "items": { "type": "string" } }
+            },
+            "additionalProperties": false
+          },
+          "judge_evaluation": {
+            "type": ["object", "null"],
+            "properties": {
+              "rubric_id": { "type": "string" },
+              "rubric_version": { "type": "string" },
+              "score": { "type": "number", "minimum": 1.0, "maximum": 5.0 },
+              "confidence": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+              "rationale": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "finops": {
+            "type": "object",
+            "required": ["prompt_tokens", "completion_tokens", "total_tokens", "cost_usd", "latency_ms", "retries", "is_task_successful"],
+            "properties": {
+              "prompt_tokens": { "type": "integer", "minimum": 0 },
+              "completion_tokens": { "type": "integer", "minimum": 0 },
+              "total_tokens": { "type": "integer", "minimum": 0 },
+              "cost_usd": { "type": "number", "minimum": 0.0 },
+              "latency_ms": { "type": "number", "minimum": 0.0 },
+              "retries": { "type": "integer", "minimum": 0 },
+              "retry_cost_waste_usd": { "type": "number", "minimum": 0.0 },
+              "is_task_successful": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          },
+          "policy_violations": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "required": ["algorithm", "canonical_hash"],
+      "properties": {
+        "algorithm": { "type": "string", "enum": ["SHA-256"] },
+        "canonical_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
