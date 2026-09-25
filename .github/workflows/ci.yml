@@ -7,7 +7,8 @@ on:
     branches: [ "main" ]
 
 env:
-  # Suppress Node deprecation notice during runner transition
+  # Suppress Node deprecation notice during GitHub runner transition
+  ACTIONS_NODE20_DEPRECATION_WARNING: "false"
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: "true"
 
 jobs:
