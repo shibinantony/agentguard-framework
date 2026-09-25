@@ -45,3 +45,12 @@ def test_finops_aggregate_cost_per_successful_task():
     assert agg["failed_tasks"] == 1
     # Cost per successful task = $0.03 / 2 = $0.015
     assert agg["cost_per_successful_task_usd"] == 0.015
+
+
+def test_hyperscaler_rate_cards_loading():
+    for name in ["azure", "aws", "gcp", "openai", "vllm"]:
+        calc = FinOpsCalculator.from_hyperscaler(name)
+        assert len(calc.rate_cards) > 0
+        # Calculate cost with loaded card
+        cost = calc.calculate_cost(prompt_tokens=1000, completion_tokens=500)
+        assert cost >= 0.0

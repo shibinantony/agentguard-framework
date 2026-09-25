@@ -1,0 +1,18 @@
+# FinOps Rate Card: OpenAI Direct API
+# Currency: USD per 1,000 tokens
+hyperscaler: "OpenAI"
+service: "OpenAI Platform API"
+version: "2026.1"
+rates:
+  gpt-4o:
+    prompt_rate_per_1k: 0.002500
+    completion_rate_per_1k: 0.010000
+    description: "OpenAI direct GPT-4o multimodal"
+  gpt-4o-mini:
+    prompt_rate_per_1k: 0.000150
+    completion_rate_per_1k: 0.000600
+    description: "OpenAI direct GPT-4o-mini"
+  o1:
+    prompt_rate_per_1k: 0.015000
+    completion_rate_per_1k: 0.060000
+    description: "OpenAI direct o1 reasoning model"

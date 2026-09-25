@@ -185,11 +185,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </section>
 
     <section>
-      <h2>Cryptographic Provenance & Receipt Integrity</h2>
+      <h2>Tamper-Evident Verification & Audit Provenance</h2>
       <div class="integrity-box">
-        <div>Algorithm: {{ receipt.integrity.algorithm }}</div>
-        <div>Receipt ID: {{ receipt.receipt_id }}</div>
-        <div>Canonical SHA-256 Digest: {{ receipt.integrity.canonical_hash }}</div>
+        <div>Verification Standard: {{ receipt.integrity.algorithm }} Digest</div>
+        <div>Audit Receipt Reference: {{ receipt.receipt_id }}</div>
+        <div>Digital Verification Hash: {{ receipt.integrity.canonical_hash }}</div>
       </div>
     </section>
   </div>

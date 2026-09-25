@@ -1,0 +1,18 @@
+# FinOps Rate Card: Google Cloud Platform (GCP) Vertex AI
+# Currency: USD per 1,000 tokens
+hyperscaler: "Google Cloud Platform"
+service: "Vertex AI"
+version: "2026.1"
+rates:
+  gemini-1.5-pro:
+    prompt_rate_per_1k: 0.001250
+    completion_rate_per_1k: 0.005000
+    description: "GCP Vertex AI Gemini 1.5 Pro 2M context window"
+  gemini-1.5-flash:
+    prompt_rate_per_1k: 0.000075
+    completion_rate_per_1k: 0.000300
+    description: "GCP Vertex AI Gemini 1.5 Flash cost-optimized agent tier"
+  claude-3-5-sonnet@vertex:
+    prompt_rate_per_1k: 0.003000
+    completion_rate_per_1k: 0.015000
+    description: "Anthropic Claude 3.5 Sonnet deployed on GCP Vertex AI"

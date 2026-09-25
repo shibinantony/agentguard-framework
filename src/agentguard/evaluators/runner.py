@@ -74,7 +74,13 @@ class ScenarioRunner:
         )
 
     @classmethod
-    def from_directory(cls, dir_path: Path | str) -> ScenarioRunner:
+    def from_directory(
+        cls,
+        dir_path: Path | str,
+        live: bool = False,
+        hyperscaler: Optional[str] = None,
+        judge_samples: int = 1,
+    ) -> ScenarioRunner:
         """Instantiate runner from an agent scenario directory."""
         dir_path = Path(dir_path)
         
@@ -102,7 +108,6 @@ class ScenarioRunner:
                 rubric_raw = yaml.safe_load(f)
                 rubric = Rubric(**rubric_raw)
 
-        # Build mock model adapter with scenario-specific mock responses if provided
         canned_responses = {}
         for s in scenarios:
             if s.simulated_model_response:
@@ -127,15 +132,37 @@ class ScenarioRunner:
                 )
                 canned_responses[s.input_prompt] = resp
 
-        adapter = MockModelAdapter(canned_responses=canned_responses)
+        adapter = None
+        judge = None
 
-        return cls(
+        model_spec = agent_config.get("model", {})
+        provider = model_spec.get("provider", "mock").lower()
+
+        if live or (provider != "mock" and provider != ""):
+            from ..integrations.api_adapter import APIModelAdapter
+            from ..judges.api_judge import APIJudge
+
+            adapter = APIModelAdapter(
+                provider=provider if provider != "mock" else "openai",
+                model_id=model_spec.get("model_id", "gpt-4o-mini"),
+            )
+            judge = APIJudge(model_adapter=adapter, rubric=rubric, samples=judge_samples)
+        else:
+            adapter = MockModelAdapter(canned_responses=canned_responses)
+            judge = MockJudge(rubric=rubric)
+
+        finops_calc = FinOpsCalculator.from_hyperscaler(hyperscaler) if hyperscaler else FinOpsCalculator()
+
+        runner = cls(
             agent_config=agent_config,
             scenarios=scenarios,
             policy=policy,
             rubric=rubric,
             model_adapter=adapter,
+            judge=judge,
         )
+        runner.finops = finops_calc
+        return runner
 
     def run_all(self, output_dir: Optional[Path] = None) -> Dict[str, Any]:
         """Execute all scenarios, generate evidence receipt, and render HTML report."""

@@ -29,14 +29,15 @@ Organizations deploying autonomous agents face four interconnected crises:
 ## 3. Product Mission & Value Proposition
 
 ### Mission
-To provide the definitive open-source assurance infrastructure that enables engineers, security teams, and auditors to verify agent quality, enforce operational boundaries, optimize unit economics, and prove compliance with mathematical and cryptographic transparency.
+To provide the definitive open-source assurance infrastructure that enables engineering leaders, platform architects, and chief risk officers to engineer trust into autonomous agents, enforce operational boundaries as code, optimize unit economics across hyperscalers, and prove compliance with verifiable transparency.
 
 ### Core Value Proposition
-- **Vendor-Neutral & Model-Agnostic:** Operates seamlessly across OpenAI, Anthropic, Google Gemini, open weights (Ollama, vLLM), or mock testbeds via a clean `ModelAdapter` interface.
-- **Policy-as-Code Gating:** Declarative YAML policies define clear thresholds for release gates and runtime interventions (`PASS`, `REVIEW`, `BLOCK`).
-- **Hybrid Evaluation Engine:** Combines microsecond-fast deterministic heuristics with versioned, calibrated LLM-as-a-judge rubrics.
-- **Granular FinOps:** Calculates cost per successful task, token waste from retries, and model routing efficiency.
-- **Audit-Ready Evidence Receipts:** Generates cryptographically hashed (SHA-256) JSON receipts and self-contained HTML audit reports for every evaluation run.
+- **From Reactive Governance to Engineered Trust:** Moves governance from a manual, late-stage audit blocker into an automated, in-pipeline asset that scales without linear headcount costs.
+- **Vendor-Neutral & Model-Agnostic:** Operates seamlessly across Microsoft Azure OpenAI, AWS Bedrock, Google Cloud Vertex AI, direct model endpoints (OpenAI, Anthropic), or self-hosted GPU clusters (vLLM, Ollama) via clean `ModelAdapter` interfaces.
+- **Policy-as-Code Gating:** Declarative YAML policies define unambiguous release thresholds and runtime interventions (`PASS`, `REVIEW`, `BLOCK`).
+- **Hybrid Assurance Engine:** Integrates microsecond deterministic filters (prompt injection, credentials, PII, tool allowlists) with calibrated semantic LLM-as-a-judge evaluations handling non-determinism via multi-sample consensus.
+- **Hyperscaler-Calibrated FinOps:** Calculates cost per successful task, token waste from agent retries, and unit economics across major cloud rate cards.
+- **Tamper-Evident Evidence Receipts:** Generates digital verification receipts (SHA-256) and self-contained HTML audit dashboards for every evaluation run.
 
 ---
 

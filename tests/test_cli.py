@@ -29,3 +29,27 @@ def test_cli_evaluate_execution(tmp_path: Path):
     assert "FINAL ASSURANCE VERDICT: BLOCK" in result.output
     assert (out_dir / "evidence.json").exists()
     assert (out_dir / "evidence.html").exists()
+
+
+def test_cli_evaluate_hyperscaler(tmp_path: Path):
+    runner = CliRunner()
+    out_dir = tmp_path / "hyperscaler_reports"
+    result = runner.invoke(
+        main,
+        ["evaluate", "examples/customer-support-agent", "--output-dir", str(out_dir), "--hyperscaler", "azure"],
+    )
+    assert result.exit_code == 1
+    assert "FinOps Rate Card: AZURE" in result.output
+    assert (out_dir / "evidence.json").exists()
+
+
+def test_cli_evaluate_judge_samples(tmp_path: Path):
+    runner = CliRunner()
+    out_dir = tmp_path / "samples_reports"
+    result = runner.invoke(
+        main,
+        ["evaluate", "examples/customer-support-agent", "--output-dir", str(out_dir), "--judge-samples", "2"],
+    )
+    assert result.exit_code == 1
+    assert (out_dir / "evidence.json").exists()
+

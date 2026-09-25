@@ -1,0 +1,22 @@
+# FinOps Rate Card: Amazon Web Services (AWS) Bedrock
+# Currency: USD per 1,000 tokens
+hyperscaler: "Amazon Web Services"
+service: "Amazon Bedrock"
+version: "2026.1"
+rates:
+  anthropic.claude-3-5-sonnet:
+    prompt_rate_per_1k: 0.003000
+    completion_rate_per_1k: 0.015000
+    description: "AWS Bedrock Claude 3.5 Sonnet frontier reasoning"
+  anthropic.claude-3-haiku:
+    prompt_rate_per_1k: 0.000250
+    completion_rate_per_1k: 0.001250
+    description: "AWS Bedrock Claude 3 Haiku high-throughput agent tier"
+  meta.llama3-1-70b-instruct:
+    prompt_rate_per_1k: 0.000720
+    completion_rate_per_1k: 0.000720
+    description: "AWS Bedrock Llama 3.1 70B open-weights managed endpoint"
+  amazon.titan-text-express:
+    prompt_rate_per_1k: 0.000200
+    completion_rate_per_1k: 0.000600
+    description: "AWS Titan Text Express foundational model"

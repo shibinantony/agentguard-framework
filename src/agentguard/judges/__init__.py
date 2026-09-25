@@ -2,5 +2,6 @@
 
 from .base import BaseJudge, JudgeResult, Rubric
 from .mock_judge import MockJudge
+from .api_judge import APIJudge
 
-__all__ = ["BaseJudge", "JudgeResult", "Rubric", "MockJudge"]
+__all__ = ["BaseJudge", "JudgeResult", "Rubric", "MockJudge", "APIJudge"]

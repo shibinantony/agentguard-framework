@@ -1,8 +1,10 @@
-"""AgentGuard CLI interface."""
+"""AgentGuard CLI interface: Executive Assurance Control Plane for AI Agents."""
 
 from __future__ import annotations
 import sys
+import webbrowser
 from pathlib import Path
+from typing import Optional
 import click
 from .evaluators.runner import ScenarioRunner
 from .monitoring.logger import get_redacting_logger
@@ -18,26 +20,46 @@ def main() -> None:
 
 @main.command(name="evaluate")
 @click.argument("target_path", type=click.Path(exists=True, file_okay=False, dir_okay=True))
-@click.option("--output-dir", "-o", default="reports", help="Directory to save evidence receipts and HTML report.")
-@click.option("--strict", is_flag=True, default=False, help="Fail with non-zero exit code on REVIEW status.")
-def evaluate(target_path: str, output_dir: str, strict: bool) -> None:
+@click.option("--output-dir", "-o", default="reports", help="Directory where audit receipts and HTML reports are saved (default: ./reports).")
+@click.option("--strict", is_flag=True, default=False, help="Fail with non-zero exit code on REVIEW status (for zero-tolerance release gates).")
+@click.option("--live", is_flag=True, default=False, help="Execute live LLM API calls instead of deterministic mock adapter.")
+@click.option("--hyperscaler", "-h", type=click.Choice(["azure", "aws", "gcp", "openai", "vllm"], case_sensitive=False), default=None, help="Apply hyperscaler-specific FinOps pricing rate card.")
+@click.option("--judge-samples", type=int, default=1, help="Number of LLM judge evaluation samples to calculate variance.")
+@click.option("--open", "open_report", is_flag=True, default=False, help="Automatically open generated HTML audit report in default web browser.")
+def evaluate(
+    target_path: str,
+    output_dir: str,
+    strict: bool,
+    live: bool,
+    hyperscaler: Optional[str],
+    judge_samples: int,
+    open_report: bool,
+) -> None:
     """Evaluate an AI agent scenario directory against assurance policies."""
     logger = get_redacting_logger("agentguard.cli")
     target = Path(target_path)
     output = Path(output_dir)
 
     click.echo(click.style(f"\n=======================================================", fg="cyan"))
-    click.echo(click.style(f" AgentGuard Assurance Evaluation Pipeline ", fg="cyan", bold=True))
+    click.echo(click.style(f" AgentGuard Assurance Control Plane ", fg="cyan", bold=True))
+    click.echo(click.style(f" Mode: {'LIVE MODEL API' if live else 'DETERMINISTIC MOCK'}", fg="yellow" if live else "green"))
+    if hyperscaler:
+        click.echo(click.style(f" FinOps Rate Card: {hyperscaler.upper()}", fg="cyan"))
     click.echo(click.style(f" Target: {target.resolve()}", fg="cyan"))
     click.echo(click.style(f"=======================================================\n", fg="cyan"))
 
     try:
-        runner = ScenarioRunner.from_directory(target)
+        runner = ScenarioRunner.from_directory(
+            target,
+            live=live,
+            hyperscaler=hyperscaler,
+            judge_samples=judge_samples,
+        )
     except Exception as e:
         click.echo(click.style(f"Configuration error: {e}", fg="red"), err=True)
         sys.exit(1)
 
-    click.echo(f"Loaded {len(runner.scenarios)} synthetic test scenarios.")
+    click.echo(f"Loaded {len(runner.scenarios)} test scenarios.")
     click.echo(f"Agent ID: {runner.agent_config.get('agent_id', 'unknown')}")
     click.echo(f"Policy ID: {runner.policy.policy_id}")
     click.echo("Running assurance pipeline...\n")
@@ -54,14 +76,14 @@ def evaluate(target_path: str, output_dir: str, strict: bool) -> None:
         v_color = "green" if s["verdict"] == "PASS" else ("yellow" if s["verdict"] == "REVIEW" else "red")
         click.echo(
             f" * [{click.style(s['verdict'], fg=v_color, bold=True):<6}] "
-            f"{s['scenario_id']:<20} "
+            f"{s['scenario_id']:<24} "
             f"Cost: ${s['finops']['cost_usd']:.5f} | "
             f"Lat: {s['finops']['latency_ms']}ms | "
             f"Quality: {s['judge_evaluation']['score'] if s['judge_evaluation'] else 'N/A'}"
         )
         if s.get("policy_violations"):
             for v in s["policy_violations"]:
-                click.echo(f"     |-> Violation: {click.style(v, fg='red')}")
+                click.echo(f"     |-> Policy Gate: {click.style(v, fg='red')}")
 
     click.echo("-" * 75)
     click.echo("\nAssurance & FinOps Summary:")
@@ -73,15 +95,25 @@ def evaluate(target_path: str, output_dir: str, strict: bool) -> None:
     click.echo(f" * Total Retries: {summary['total_retries']}")
     click.echo(f" * Mean Latency: {summary['mean_latency_ms']:.1f} ms")
 
-    # Cryptographic integrity
-    click.echo("\nCryptographic Provenance:")
+    # Digital Verification & Audit Trail
+    click.echo("\nAudit-Ready Verification Trail:")
     click.echo(f" * Algorithm: {receipt['integrity']['algorithm']}")
-    click.echo(f" * Canonical SHA-256: {receipt['integrity']['canonical_hash']}")
+    click.echo(f" * Tamper-Evident SHA-256 Receipt: {receipt['integrity']['canonical_hash']}")
 
+    # Location of outputs
     if "artifacts" in receipt:
-        click.echo(f"\nArtifacts Generated:")
-        click.echo(f" * JSON Receipt: {receipt['artifacts']['json_path']}")
-        click.echo(f" * HTML Report:  {receipt['artifacts']['html_path']}")
+        json_p = Path(receipt["artifacts"]["json_path"])
+        html_p = Path(receipt["artifacts"]["html_path"])
+        json_size = json_p.stat().st_size if json_p.exists() else 0
+        html_size = html_p.stat().st_size if html_p.exists() else 0
+
+        click.echo(f"\nAudit Artifacts Saved:")
+        click.echo(f" * Structured JSON Receipt : {json_p} ({json_size} bytes)")
+        click.echo(f" * Interactive HTML Report : {html_p} ({html_size} bytes)")
+
+        if open_report and html_p.exists():
+            click.echo(f" Opening HTML report in web browser: {html_p}")
+            webbrowser.open(html_p.as_uri())
 
     # Final Verdict Display
     color = "green" if verdict == "PASS" else ("yellow" if verdict == "REVIEW" else "red")

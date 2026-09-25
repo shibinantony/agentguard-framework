@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  # Suppress Node deprecation notice during runner transition
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: "true"
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,10 +18,10 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.2.2
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v5.4.0
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -32,8 +36,8 @@ jobs:
 
     - name: Verify Customer Support Agent Benchmark
       run: |
-        # Evaluates agent and produces evidence receipt
-        # Note: cs-03 to cs-06 are intentional adversarial test cases demonstrating policy gating
+        # Evaluates agent and produces audit-ready evidence receipt
+        # cs-03 to cs-06 are intentional adversarial test cases demonstrating policy gating
         agentguard evaluate examples/customer-support-agent --output-dir reports || true
         test -f reports/evidence.json
         test -f reports/evidence.html

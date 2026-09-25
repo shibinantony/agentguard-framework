@@ -1,0 +1,18 @@
+# FinOps Rate Card: Self-Hosted GPU Cluster (vLLM / Triton on Kubernetes)
+# Currency: Estimated hardware amortized cost in USD per 1,000 tokens
+hyperscaler: "Self-Hosted / On-Prem / Cloud GPU"
+service: "vLLM High-Throughput Inference Engine"
+version: "2026.1"
+rates:
+  llama-3-8b-instruct:
+    prompt_rate_per_1k: 0.000040
+    completion_rate_per_1k: 0.000080
+    description: "Amortized single A10G/L4 GPU compute footprint"
+  llama-3.1-70b-instruct:
+    prompt_rate_per_1k: 0.000350
+    completion_rate_per_1k: 0.000700
+    description: "Amortized 4x A100/H100 80GB GPU tensor-parallel cluster"
+  mistral-7b-instruct:
+    prompt_rate_per_1k: 0.000030
+    completion_rate_per_1k: 0.000060
+    description: "Amortized single L4 GPU compute footprint"

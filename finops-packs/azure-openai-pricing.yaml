@@ -1,0 +1,22 @@
+# FinOps Rate Card: Microsoft Azure OpenAI Service
+# Currency: USD per 1,000 tokens
+hyperscaler: "Microsoft Azure"
+service: "Azure OpenAI Service"
+version: "2026.1"
+rates:
+  gpt-4o:
+    prompt_rate_per_1k: 0.002500
+    completion_rate_per_1k: 0.010000
+    description: "Azure OpenAI GPT-4o multimodal enterprise endpoint"
+  gpt-4o-mini:
+    prompt_rate_per_1k: 0.000150
+    completion_rate_per_1k: 0.000600
+    description: "Azure OpenAI GPT-4o-mini cost-optimized endpoint"
+  o1-preview:
+    prompt_rate_per_1k: 0.015000
+    completion_rate_per_1k: 0.060000
+    description: "Azure OpenAI o1 reasoning model"
+  text-embedding-3-small:
+    prompt_rate_per_1k: 0.000020
+    completion_rate_per_1k: 0.000000
+    description: "Azure OpenAI embeddings"
